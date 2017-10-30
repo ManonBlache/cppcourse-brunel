@@ -74,6 +74,8 @@ class Neuron
      * @param : Takes as paramater the tab position to be cleared. 
      */
 	
+	double Poisson_noise();
+	
 };
 
 

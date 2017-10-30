@@ -1,5 +1,6 @@
 #include "Neuron.h"
 #include <cmath>
+#include <random>
 
 //Constructeur et constructeur de copie
 	Neuron::Neuron()
@@ -64,7 +65,7 @@ bool Neuron::Update (double const& Iext)
 		ref_ -=1;
 	} else {
 
-	membrane_pot_= getBuffer((life_time_+1)%buffer_.size()) +(exp(-h_/tau_)*membrane_pot_) + ( Iext*membrane_resistance_*(1-exp(-h_/tau_)) ) ;
+	membrane_pot_= getBuffer((life_time_+1)%buffer_.size()) +(exp(-h_/tau_)*membrane_pot_) + ( Iext*membrane_resistance_*(1-exp(-h_/tau_)) ) + 0.1*Poisson_noise() ;
 		clearBuffer((life_time_+1)%buffer_.size());
 	}
 	
@@ -92,3 +93,11 @@ double Neuron::getBuffer(size_t position) {
 void Neuron::clearBuffer(size_t position){
 	buffer_[position]=0;
 	}
+
+double Neuron::Poisson_noise(){
+	random_device rd;
+	mt19937 gen(rd());
+	poisson_distribution<> d(2);
+
+	return d(gen);
+}

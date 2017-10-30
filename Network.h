@@ -32,6 +32,10 @@ class Network
 	
 	//Methodes
 	void create_network(int num_neurons);
+	/*!
+     * @brief : Function to create the netword, i.e. the 12500 neurons.
+     * 			
+     */
 	void connect();
 	/*!
      * @brief : Function to create the random connections between the neurons,
@@ -39,6 +43,12 @@ class Network
      */
      
      void update();
+     /*!
+     * @brief : Passes through the neurons_ vector,
+     * 			if the neuron spikes during his Neuron::update(),
+     * 			the Network::update() find the connections and implement 
+     * 			the buffer of connected neurons
+     */
 	
 };
 

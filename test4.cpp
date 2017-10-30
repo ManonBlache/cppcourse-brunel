@@ -9,73 +9,23 @@ double insertTimeDeath (double tstart);
 bool makeAWish();  
 
 
-int main () {
+int main(){
+	
 	int clock_=0;
-	
-	///Value used by default if the user doesnt want to change it
 	int t_stop (1000);
-
-	Neuron FirstNeuron;
-	Neuron SecondNeuron;
-
-	
-	if (makeAWish()) { ///The user decide to change or not the values
-		double I (insertCurrent());
-		double Step (insertTimeStep());
-		double start(insertTimeBirth());
-		
-		FirstNeuron.setIext(I);
-		SecondNeuron.setIext(0);
-		FirstNeuron.setH(Step);
-		SecondNeuron.setH(Step);
-		FirstNeuron.setLifeTime(start/Step);
-		SecondNeuron.setLifeTime(start/Step);
-		
-		t_stop = insertTimeDeath(start);
-	} 
-		
-	
-	//OUVERTURE FICHIER ICI
-	string nom_fichier ("data_01.txt");
-	ofstream sortie (nom_fichier.c_str());
-	
-	string nom_fichier_02 ("data_02.txt");
-	ofstream sortie_02 (nom_fichier_02.c_str());
 	
 	
-	if (sortie.fail() or sortie_02.fail()) {
-		cerr << "Erreur d'ouverture du fichier,"
-			 << "impossible d'écrire dans le fichier " << nom_fichier << endl;
-			 } 
-		else {
-				while (clock_*0.1<t_stop) {
-					
- 					if (FirstNeuron.Update(1.01)){
-						SecondNeuron.ImplementBuffer(FirstNeuron.getJ(),FirstNeuron.getD());
-						
-						//ECRITURE FICHIER ICI
-						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() 
-							   << " at time = " << FirstNeuron.getLifeTime()
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
-					}
-					if (SecondNeuron.Update(0)){
-						//ECRITURE FICHIER ICI
-						sortie_02 << "Spike neuron 2 number " << SecondNeuron.getSpikes() 
-							   << " at time = " << SecondNeuron.getLifeTime() 
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
-					}
-					
-					
-					clock_+=1;
-				}
-
-		}
+	Network Brain;
 	
-	//FERMETURE FICHIER ICI
-	sortie.close ();
+	while (clock_<t_stop){
+		Brain.update();
+		++clock_;
+	}
 	
 	
-	return 0;
+	
+	
+	
 }
 
 
