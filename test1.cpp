@@ -1,6 +1,5 @@
-//#include "Neuron.h"
 #include <fstream>
-#include "Neuron.cpp"
+#include "Neuron.h"
 
 double insertCurrent ();  
 double insertTimeBirth (); 
@@ -34,7 +33,7 @@ int main () {
 			 } 
 		else {
 				while (FirstNeuron.getLifeTime()<t_stop) {
-					if (FirstNeuron.Update()){
+					if (FirstNeuron.Update(1.01,false)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike number " << FirstNeuron.getSpikes() << " at time = " << FirstNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						     

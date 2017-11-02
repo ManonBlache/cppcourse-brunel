@@ -1,6 +1,6 @@
 #include <fstream>
 #include <vector>
-#include "Neuron.cpp"
+#include "Neuron.h"
 
 double insertCurrent ();  
 double insertTimeBirth (); 
@@ -52,18 +52,19 @@ int main () {
 					
 				
 					
-					if (FirstNeuron.Update()){
+					if (FirstNeuron.Update(1.01,false)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() << " at time = " << FirstNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						   
 					}
-					if (SecondNeuron.Update()){
+					if (SecondNeuron.Update(1.01,false)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 2 number " << SecondNeuron.getSpikes() << " at time = " << SecondNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						   
 					}
-					FirstNeuron.Interact(SecondNeuron);
-					SecondNeuron.Interact(FirstNeuron);
+					/*Function interact has been replaced later by the new update+buffer functions*/
+					//FirstNeuron.Interact(SecondNeuron);
+					//SecondNeuron.Interact(FirstNeuron);
 				}
 				//sortie << "--> Number of Spikes: " << FirstNeuron.getSpikes() << endl;
 		}

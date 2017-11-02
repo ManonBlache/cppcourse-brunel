@@ -13,11 +13,12 @@ int main () {
 	int clock_=0;
 	
 	///Value used by default if the user doesnt want to change it
-	int t_stop (1000);
+	int t_stop (200);
 
 
 	
 	Neuron FirstNeuron;
+	FirstNeuron.setJ(21);
 	Neuron SecondNeuron;
 
 	
@@ -52,22 +53,24 @@ int main () {
 		else {
 				while (clock_*0.1<t_stop) {
 					
- 					if (FirstNeuron.Update(1.01)){
-						SecondNeuron.ImplementBuffer(FirstNeuron.getJ(),FirstNeuron.getD());
+ 					if (FirstNeuron.Update(1.01,false)){
+						SecondNeuron.ImplementBuffer(FirstNeuron.getJ(),(FirstNeuron.getLifeTime()/0.1)+15);
+						cout << "buffer de n2  "<<SecondNeuron.getBuffer((FirstNeuron.getLifeTime()/0.1)+15)<<endl;
 						
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() 
 							   << " at time = " << FirstNeuron.getLifeTime()
 							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
 					}
-					if (SecondNeuron.Update(0)){
+					if (SecondNeuron.Update(0.0,false)){
 						//ECRITURE FICHIER ICI
+						cout <<"n2 spiked! at time " << SecondNeuron.getLifeTime() << endl;
 						sortie_02 << "Spike neuron 2 number " << SecondNeuron.getSpikes() 
 							   << " at time = " << SecondNeuron.getLifeTime() 
 							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
 					}
 					
-					
+					//cout << SecondNeuron.getBuffer(clock_)<< endl;
 					clock_+=1;
 				}
 

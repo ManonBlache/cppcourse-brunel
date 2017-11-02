@@ -26,6 +26,7 @@ class Network
 	
 	//Constructeur et constructeur de copie
 	Network();
+	Network(int number);
 	///Network(double const& birth); 
 	Network(Network const &autre);
 	~Network();

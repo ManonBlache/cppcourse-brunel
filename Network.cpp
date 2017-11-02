@@ -10,11 +10,19 @@ Network::Network()
 	connect(); //!<And then creates the 10% connections between them
 }
 
+Network::Network(int number)
+{	/*neurons_.resize(12500); don't need this line if using 
+	tab.push_back() in function create_network*/
+	connections_.resize(number, vector<int>(number, 0));	
+	create_network(number); //!< When network is created, it creates all the 12500 neurons
+	connect(); //!<And then creates the 10% connections between them
+}
+
 Network::~Network(){
 		for (auto& neuron : neurons_){
 			neuron= nullptr;
 			delete neuron;
-			}
+		}
 	
 	
 }
@@ -57,7 +65,7 @@ void Network::update(){
 	
 	for (size_t sender(0); sender < neurons_.size(); ++sender){
 		
-		if (neurons_[sender]->Update(1.01)){ 
+		if (neurons_[sender]->Update(1.01,true)){ 
 			//!< If the neuron spikes, it has to send J in the buffer of neurons connected to it
 			
 			for (auto target : connections_[sender]){
@@ -66,7 +74,7 @@ void Network::update(){
 					neurons_[target]->ImplementBuffer((connections_[sender][target]*0.1),15);
 				}
 				if ((connections_[sender][target]!=0) and (sender>=99999)){ //!< Find the connections
-					neurons_[target]->ImplementBuffer((connections_[sender][target]*0.5),15);
+					neurons_[target]->ImplementBuffer((connections_[sender][target]*(-0.5)),15);
 				}
 			}
 				

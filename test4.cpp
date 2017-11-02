@@ -22,7 +22,7 @@ int main(){
 		++clock_;
 	}
 	
-	
+	cout << "done" << endl;
 	
 	
 	
