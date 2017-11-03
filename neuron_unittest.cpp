@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 TEST (NeuronTest, MembranePotential){
-	Neuron neuron;
+	Neuron neuron(0.1);
 	//!< Here we want to test without Poisson's background noise,
 	//!<so we test with updtate(iext, poisson=false)
 
@@ -28,7 +28,7 @@ TEST (NeuronTest, MembranePotential){
 }
 
 TEST (NeuronTest, SpikeTime){
-	Neuron neuron;
+	Neuron neuron(0.1);
 	
 	//With an imput current of 1.01, we know that the spikes should occur
 	//at 92.4 ms , 186,8 ms , 281,2 ms and 375,6 ms.
@@ -54,15 +54,15 @@ TEST (NeuronTest, SpikeTime){
 }
 
 TEST(NeuronTest, PoissonNoise){
-	Neuron neuron;
+	Neuron neuron(0.1);
 	EXPECT_EQ(0.0, neuron.getMembranePot());
 	neuron.Update(0.0,true);
 	EXPECT_FALSE(neuron.getMembranePot()==0.0);
 }
 
 TEST (TwoNeurons, TransmitionAndDelay){
-	Neuron n1; //!<Will send spike to n2, Iext=1.01
-	Neuron n2; //!<Will receive only imput from n1, Iext=0
+	Neuron n1(0.1); //!<Will send spike to n2, Iext=1.01
+	Neuron n2(0.1); //!<Will receive only imput from n1, Iext=0
 	int global_clock =0;
 	
 	/*At time 92.4, n1 is supposed to spike,
@@ -116,8 +116,8 @@ TEST (TwoNeurons, TransmitionAndDelay){
 }
 
 TEST(TwoNeurons, CleanedBuffer){
-	Neuron n1; //!<Will send spike to n2, Iext=1.01
-	Neuron n2; //!<Will receive only imput from n1, Iext=0
+	Neuron n1(0.1); //!<Will send spike to n2, Iext=1.01
+	Neuron n2(0.1); //!<Will receive only imput from n1, Iext=0
 	int global_clock =0;
 	
 	/*At time 92.4, n1 is supposed to spike,
@@ -158,8 +158,8 @@ TEST(TwoNeurons, CleanedBuffer){
 }
 
 TEST(TwoNeurons, Spiking){
-	Neuron n1; //!<Will send spike to n2, Iext=1.01
-	Neuron n2; //!<Will receive only imput from n1, Iext=0
+	Neuron n1(0.1); //!<Will send spike to n2, Iext=1.01
+	Neuron n2(0.1); //!<Will receive only imput from n1, Iext=0
 	int global_clock =0;
 	
 	n1.setJ(19.999); /*We want n2 spiking after 2 spikes of n1*/
@@ -209,9 +209,3 @@ TEST(TwoNeurons, Spiking){
 	EXPECT_EQ(0,n2.getMembranePot());
 	
 }
-
-TEST(NetworkTest, Creation){
-	Network Brain;
-	
-	
-} 

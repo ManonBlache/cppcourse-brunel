@@ -17,8 +17,8 @@ int main () {
 
 
 	
-	Neuron FirstNeuron;
-	Neuron SecondNeuron;
+	Neuron FirstNeuron(0.1);
+	Neuron SecondNeuron(0.1);
 
 	
 	if (makeAWish()) { ///The user decide to change or not the values

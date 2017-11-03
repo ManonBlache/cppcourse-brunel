@@ -3,7 +3,7 @@
 #include <random>
 
 //Constructeur et constructeur de copie
-	Neuron::Neuron()
+	Neuron::Neuron(double J)
 	//!<The default constructor initializes all the parameters used by default.
 	:membrane_pot_(0),
 	 num_spikes_(0),
@@ -15,12 +15,13 @@
 	 h_(0.1), //!<integration time step
 	 ref_(0),
 	 Iext_(1.01), //est ce qu'on voudrait pas avoir un constructeur qui cree les neurones inhibiteurs et excitateurs?
-	 J_(0.1),//!<PSP (spike response) amplitude for excitatory connection
+	 J_(J),//!<PSP (spike response) amplitude for excitatory connection
 	 D_(1.5), //!<Synaptic delay
-	 buffer_((D_/h_)+1, 0)
+	 buffer_((D_/h_)+1, 0),
+	 targets_(0,0)
 	 {}
 
-	Neuron::Neuron(double const& birth) 
+	Neuron::Neuron(double J,double const& birth) 
 	//!< This constructor allows the user to run the simulation from a t_start!=0
 	: membrane_pot_(0),
 	 num_spikes_(0),
@@ -34,12 +35,10 @@
 	 Iext_(1.01),
 	 J_(0.1),//!<PSP (spike response) amplitude 
 	 D_(1.5), //!<Synaptic delay
-	 buffer_((D_/h_)+1, 0)
+	 buffer_((D_/h_)+1, 0),
+	 targets_(0,0)
 	{} 
-	
-	Neuron::Neuron(Neuron const &autre)
-	:membrane_pot_(autre.membrane_pot_), num_spikes_(autre.num_spikes_), tau_(10), tau_ref_(2)
-	{} //Ce constructeur ne sert a rien!!
+
 	
 	Neuron::~Neuron (){}
 	
@@ -51,6 +50,8 @@
     double Neuron::getH() const {return h_;}
     double Neuron::getD() const {return D_;}
     double Neuron::getJ() const {return J_;}
+    vector<int> Neuron::getTargets() const {return targets_;}
+    
     void Neuron::setLifeTime(int time) {life_time_=life_time_+time;}
     void Neuron::setH(double h) {h_=h;}
     void Neuron::setJ(double j) {J_=j;}
@@ -102,6 +103,8 @@ bool Neuron::Update (double const& Iext, bool poisson)
 						 * -->add 0.1*Poisson_noise()
 						 **/
 						+0.1*Poisson_noise(); //does the poisson spikes have 0.1(excitatory) or 0.5(inhibatory) J value?
+	//cout << membrane_pot_ << "/";
+	//if(getBuffer(life_time_+1)!=0){cout<<" buffer "<< getBuffer(life_time_+1)<<" at time "<<life_time_+1<<endl;}
 	} else {
 		
 		
@@ -109,6 +112,7 @@ bool Neuron::Update (double const& Iext, bool poisson)
 		/**We have to add+1 because neuron clock is not yet incremented**/
 						+(exp(-h_/tau_)*membrane_pot_) 
 						+( Iext*membrane_resistance_*(1-exp(-h_/tau_)));
+	if(getBuffer(life_time_+1)!=0){cout<<" buffer "<< getBuffer(life_time_+1)<<" at time "<<life_time_+1<<endl;}
 	}
 		/**We make sure that buffer is cleared**/
 		clearBuffer((life_time_+1)%buffer_.size());
@@ -168,4 +172,13 @@ double Neuron::Poisson_noise(){
 	poisson_distribution<> d(2);
 
 	return d(gen);
+}
+
+void Neuron::setConnections(int target){
+	targets_.push_back(target);
+	/**The excitatory and inhibitatory neurons are ordoned in the 
+	 * neurons_ list, so with their numbers, we know if the connection
+	 * is exct or inhb.
+	 * Same for the targets_ list.
+	 **/
 }

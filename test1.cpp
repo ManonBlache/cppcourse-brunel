@@ -12,7 +12,7 @@ int main () {
 	///Value used by default if the user doesnt want to change it
 	double t_stop (1000);
 	
-	Neuron FirstNeuron;
+	Neuron FirstNeuron(0.1);
 	
 	if (makeAWish()) { ///The user decide to change or not the values
 		FirstNeuron.setIext(insertCurrent());

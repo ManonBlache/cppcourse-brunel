@@ -8,6 +8,8 @@ using namespace std;
 class Network
 {
 	private:
+	int Net_clock_;
+	
 	const int Ne_ = 10000; //!<number of excitatory neurons
 	const int Ni_ = 2500; //!<number of inhibitatory neurons
 	
@@ -18,7 +20,7 @@ class Network
 	const double Ji_ = 0.5; //!<weight for inhibitatory connections
 	
 	vector <Neuron*> neurons_;
-	vector <vector <int> > connections_;
+	//vector <vector <int> > connections_;
 	
 
 	
@@ -26,13 +28,13 @@ class Network
 	
 	//Constructeur et constructeur de copie
 	Network();
-	Network(int number);
-	///Network(double const& birth); 
-	Network(Network const &autre);
 	~Network();
 	
+	//Getters & setters
+	vector<Neuron*> getNeurons();
+	
 	//Methodes
-	void create_network(int num_neurons);
+	void create_network(int exct, int inhb);
 	/*!
      * @brief : Function to create the netword, i.e. the 12500 neurons.
      * 			
@@ -43,7 +45,7 @@ class Network
      * 			implement the connections_ tab with each connection.
      */
      
-     void update();
+     void update(bool poisson);
      /*!
      * @brief : Passes through the neurons_ vector,
      * 			if the neuron spikes during his Neuron::update(),

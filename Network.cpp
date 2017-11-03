@@ -4,17 +4,10 @@
 //#include <map>
 
 Network::Network()
+	:Net_clock_(0)
 {	//neurons_.resize(12500); ///don't need this line if using tab.push_back()
-	connections_.resize(12500, vector<int>(12500, 0));	
-	create_network(12500); //!< When network is created, it creates all the 12500 neurons
-	connect(); //!<And then creates the 10% connections between them
-}
-
-Network::Network(int number)
-{	/*neurons_.resize(12500); don't need this line if using 
-	tab.push_back() in function create_network*/
-	connections_.resize(number, vector<int>(number, 0));	
-	create_network(number); //!< When network is created, it creates all the 12500 neurons
+	//connections_.resize(12500, vector<int>(12500, 0));	
+	create_network(Ne_,Ni_); //!< When network is created, it creates all the 12500 neurons
 	connect(); //!<And then creates the 10% connections between them
 }
 
@@ -27,33 +20,36 @@ Network::~Network(){
 	
 }
 
-void Network::create_network(int num_neurons){
-	for (int i(0); i<num_neurons; ++i) {
-		Neuron* neuron (new Neuron());
+vector<Neuron*> Network::getNeurons(){ return neurons_;}
+
+void Network::create_network(int exct,int inhb){
+	for (int i(0); i<exct; ++i) {
+		Neuron* neuron (new Neuron(0.1));
+		neurons_.push_back(neuron);
+		}
+	for (int i(0); i<inhb; ++i) {
+		Neuron* neuron (new Neuron(0.1));//to change to -0.5
 		neurons_.push_back(neuron);
 		}
 	
 }
 
-void Network::connect(){
+void Network::connect(){ 
 	random_device rd;
 	mt19937 gen(rd());
 	uniform_int_distribution<> exct(0,9999);
 	uniform_int_distribution<> inhb(10000,12499);
 	
 	///create random connections for each neuron
-	for (size_t neuron_s = 0; neuron_s < 12500; ++neuron_s){
+	for (auto& neuron : neurons_){
 		
-		for (size_t exct_cons=0; exct_cons < 1000 ; ++exct_cons){ 
-			//!< create the excitatory connections
-			size_t connected_neuron(exct(gen));
-			connections_[connected_neuron][neuron_s]+=1; 
-			//the neuron receive connection from connected_neuron
+		for (int exct_cons=0; exct_cons < Ce_ ; ++exct_cons){ 
+			//!< create the 1000 excitatory connections
+			neuron->setConnections(exct(gen));
 		}
-		for (size_t inhb_cons=0; inhb_cons < 250 ; ++inhb_cons){ 
-			//!< create the inhibitatory connections
-			size_t connected_neuron(inhb(gen));
-			connections_[connected_neuron][neuron_s]+=1;
+		for (int inhb_cons=0; inhb_cons < Ci_ ; ++inhb_cons){ 
+			//!< create the 250 inhibitatory connections
+			neuron->setConnections(inhb(gen));
 		}
 
 	}
@@ -61,9 +57,22 @@ void Network::connect(){
 	
 }
 
-void Network::update(){
+void Network::update(bool poisson){
 	
-	for (size_t sender(0); sender < neurons_.size(); ++sender){
+	for (auto& neuron : neurons_){
+		
+		if (neuron->Update(1.01, poisson)){
+			for (auto target : neuron->getTargets()){
+				neurons_[target]->ImplementBuffer( neuron->getJ(),
+												   neuron->getLifeTime()/0.1);
+				
+				}
+				
+		}	
+	}
+	++Net_clock_;
+	
+	/*for (size_t sender(0); sender < neurons_.size(); ++sender){
 		
 		if (neurons_[sender]->Update(1.01,true)){ 
 			//!< If the neuron spikes, it has to send J in the buffer of neurons connected to it
@@ -80,6 +89,6 @@ void Network::update(){
 				
 		}
 
-	}
+	}*/
 
 }

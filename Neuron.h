@@ -26,14 +26,13 @@ class Neuron
 		double D_; //!<Delay
 		
 		vector <double> buffer_ ; //!< Neuron buffer, contains J values
-
+		vector <int> targets_; //!< Keep in memory neurons it is connected to
 	
 	public:
 	
 	//Constructeur et constructeur de copie
-	Neuron();
-	Neuron(double const& birth); 
-	Neuron(Neuron const &autre);//sert a rien!!!
+	Neuron(double J);
+	Neuron(double J, double const& birth); 
 	~Neuron ();
 	
 	//Getters et setters
@@ -44,6 +43,8 @@ class Neuron
     double getH() const;
     double getD() const;
     double getJ() const;
+    vector<int> getTargets() const;
+    
     void setLifeTime(int time);
     void setH(double h);
     void setJ(double j);
@@ -88,6 +89,8 @@ class Neuron
      * of neurons in the rest of the brain which send spikes.
      * @return : the number of spikes comming from the rest of the brain. 
      */
+	
+	void setConnections(int target);
 	
 };
 

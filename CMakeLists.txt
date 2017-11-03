@@ -12,6 +12,10 @@ add_executable (test2 Neuron.cpp Network.cpp test2.cpp)
 add_executable (test3 Neuron.cpp Network.cpp test3.cpp)
 add_executable (test4 Neuron.cpp Network.cpp test4.cpp)
 add_executable (neuron_unittest Neuron.cpp Network.cpp neuron_unittest.cpp)
+add_executable (network_unittest Neuron.cpp Network.cpp network_unittest.cpp)
 
 target_link_libraries(neuron_unittest gtest gtest_main)
 add_test(neuron_unittest neuron_unitest)
+
+target_link_libraries(network_unittest gtest gtest_main)
+add_test(network_unittest network_unitest)

@@ -17,9 +17,9 @@ int main () {
 
 
 	
-	Neuron FirstNeuron;
+	Neuron FirstNeuron(0.1);
 	FirstNeuron.setJ(21);
-	Neuron SecondNeuron;
+	Neuron SecondNeuron(0.1);
 
 	
 	if (makeAWish()) { ///The user decide to change or not the values
@@ -54,23 +54,29 @@ int main () {
 				while (clock_*0.1<t_stop) {
 					
  					if (FirstNeuron.Update(1.01,false)){
-						SecondNeuron.ImplementBuffer(FirstNeuron.getJ(),(FirstNeuron.getLifeTime()/0.1)+15);
-						cout << "buffer de n2  "<<SecondNeuron.getBuffer((FirstNeuron.getLifeTime()/0.1)+15)<<endl;
+						SecondNeuron.ImplementBuffer( FirstNeuron.getJ(),
+													 (FirstNeuron.getLifeTime()/0.1)+15);
 						
 						//ECRITURE FICHIER ICI
-						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() 
-							   << " at time = " << FirstNeuron.getLifeTime()
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
+						sortie << "Spike neuron 1 number " 
+							   << FirstNeuron.getSpikes() 
+							   << " at time = " 
+							   << FirstNeuron.getLifeTime()
+							   << " (Potential value = " 
+							   << FirstNeuron.getMembranePot() 
+							   << ")"<< endl;   
 					}
 					if (SecondNeuron.Update(0.0,false)){
 						//ECRITURE FICHIER ICI
-						cout <<"n2 spiked! at time " << SecondNeuron.getLifeTime() << endl;
-						sortie_02 << "Spike neuron 2 number " << SecondNeuron.getSpikes() 
-							   << " at time = " << SecondNeuron.getLifeTime() 
-							   << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;   
+						sortie_02 << "Spike neuron 2 number " 
+								  << SecondNeuron.getSpikes() 
+							      << " at time = " 
+							      << SecondNeuron.getLifeTime() 
+							      << " (Potential value = " 
+							      << FirstNeuron.getMembranePot() 
+							      << ")"<< endl;   
 					}
 					
-					//cout << SecondNeuron.getBuffer(clock_)<< endl;
 					clock_+=1;
 				}
 
@@ -84,8 +90,9 @@ int main () {
 }
 
 double insertCurrent () {
-	/**This function allows the user to choose a specific value for the external current Iext
-	 * **/
+	/**This function allows the user to choose a specific value 
+	 * for the external current Iext
+	 **/
 	double current;
 	cout << "Specify an external current Iext [0;400] : ";
 	cin >> current;
@@ -96,8 +103,9 @@ double insertCurrent () {
 	return current;
 }
 double insertTimeBirth () {
-	/**This function allows the user to choose a specific value for the start time
-	 * **/
+	/**This function allows the user to choose a specific value 
+	 * for the start time
+	 **/
 	double start;
 	cout << "Specify a start time: ";
 	cin >> start;
@@ -108,8 +116,9 @@ double insertTimeBirth () {
 	return start;
 }
 double insertTimeStep () {
-	/**This function allows the user to choose a specific value for the time interval h
-	 * **/
+	/**This function allows the user to choose a specific value 
+	 * for the time interval h
+	 **/
 	double step;
 	cout << "Specify a time interval: ";
 	cin >> step;
@@ -120,8 +129,9 @@ double insertTimeStep () {
 	return step;
 }
 double insertTimeDeath (double tstart) {
-	/**This function allows the user to choose a specific value for the stop time
-	 * **/
+	/**This function allows the user to choose a specific value 
+	 * for the stop time
+	 **/
 	double stop;
 	cout << "Specify a stop time: ";
 	cin >> stop;
@@ -133,11 +143,14 @@ double insertTimeDeath (double tstart) {
 }
 
 bool makeAWish() {
-	/** In this function, the user choose to change the values for Iext, h, tstart and tstop
+	/** In this function, the user choose to change the values for Iext,
+	 *  h, tstart and tstop
 	 * @return : true if the user want to change values, false if not.
 	 * **/
 	char choix ('O');
-	cout << "Voulez-vous choisir des valeurs pour Iext, t_start, t_stop et h?  (O/N) ";
+	cout << "do you want to change Iext, t_start, t_stop and h values? "
+		 <<endl
+		 <<"(O/N) ";
 		cin >> choix;
 		if (choix == 'O') { return true;} else {return false;}
 }

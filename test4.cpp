@@ -12,13 +12,13 @@ bool makeAWish();
 int main(){
 	
 	int clock_=0;
-	int t_stop (1000);
+	int t_stop (500);
 	
 	
 	Network Brain;
 	
 	while (clock_<t_stop){
-		Brain.update();
+		Brain.update(false);
 		++clock_;
 	}
 	
