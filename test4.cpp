@@ -12,7 +12,7 @@ bool makeAWish();
 int main(){
 	
 	int clock_=0;
-	int t_stop (500);
+	int t_stop (1000);
 	
 	
 	Network Brain;

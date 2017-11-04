@@ -1,4 +1,5 @@
 #include <iostream>
+#include <random>
 #include <cmath>
 #include "Network.h"
 #include "gtest/gtest.h"
@@ -9,11 +10,11 @@ TEST (NeuronTest, MembranePotential){
 	//!<so we test with updtate(iext, poisson=false)
 
 	//First Update
-	neuron.Update(1.0,false);
+	neuron.Update(1.0,false,0);
 	EXPECT_EQ(20.0*(1.0-exp(-0.1/20.0)), neuron.getMembranePot());
 	
 	//Test after numerous updates
-	for ( int i(0); i<10000; ++i) {neuron.Update(1.0,false);}
+	for ( int i(0); i<10000; ++i) {neuron.Update(1.0,false,0);}
 	///The membrane potential should tend to 20 but never reach the 
 	///threshold, thus the neuron will never spike
 	EXPECT_EQ(0, neuron.getSpikes());
@@ -22,7 +23,7 @@ TEST (NeuronTest, MembranePotential){
 	//After numerous updates w/o imput current
 	///The membrane should tend naturally towards 0 
 	///Should be enough to wait 10*tau_ ms
-	for (int i(0); i<2000 ; ++i) {neuron.Update(0.0,false);}
+	for (int i(0); i<2000 ; ++i) {neuron.Update(0.0,false,0);}
 	EXPECT_NEAR(0, neuron.getMembranePot(), 1e-3);
 	
 }
@@ -35,28 +36,32 @@ TEST (NeuronTest, SpikeTime){
 	
 	///Jump to the step just before first spike
 	///Number of spikes should be 0
-	for (int i (1); i<924; ++i) {neuron.Update(1.01,false);}
+	for (int i (1); i<924; ++i) {neuron.Update(1.01,false,0);}
 	EXPECT_EQ(0, neuron.getSpikes());
 	///Update to first spike
 	///Number of spike should be 1
-	neuron.Update(1.01,false);
+	neuron.Update(1.01,false,0);
 	EXPECT_EQ(1, neuron.getSpikes());
 	///Check if the membrane potential is reset to 0 after spike
 	EXPECT_EQ(0.0, neuron.getMembranePot());
 
 	///Jumping to second spike
-	for (int i(0); i<943 ;++i ){neuron.Update(1.01,false);}
+	for (int i(0); i<943 ;++i ){neuron.Update(1.01,false,0);}
 	EXPECT_EQ(1, neuron.getSpikes());
-	neuron.Update(1.01,false);
+	neuron.Update(1.01,false,0);
 	EXPECT_EQ(2, neuron.getSpikes());
 	
 	//We assume that if the first 2 spikes are corrects, the others too
 }
 
 TEST(NeuronTest, PoissonNoise){
+	random_device rd;
+	mt19937 gen(rd());
+	poisson_distribution<> d(2);
+	
 	Neuron neuron(0.1);
 	EXPECT_EQ(0.0, neuron.getMembranePot());
-	neuron.Update(0.0,true);
+	neuron.Update(0.0,true,d(gen));
 	EXPECT_FALSE(neuron.getMembranePot()==0.0);
 }
 
@@ -69,17 +74,17 @@ TEST (TwoNeurons, TransmitionAndDelay){
 	 * then it should implement n2's buffer for time 92.4+1.5(delay)=939*/
 	///Jump to the step just before first spike
 	while (global_clock<923) {
-		n1.Update(1.01,false);
-		n2.Update(0,false);
+		n1.Update(1.01,false,0);
+		n2.Update(0,false,0);
 		++global_clock;
 	}
 	EXPECT_EQ(0, n1.getSpikes());
 	EXPECT_EQ(0,n2.getMembranePot());
 	
 	///Update to first spike
-	n1.Update(1.01,false);
+	n1.Update(1.01,false,0);
 	EXPECT_EQ(1, n1.getSpikes());
-	n2.Update(0,false);
+	n2.Update(0,false,0);
 	EXPECT_EQ(0, n2.getSpikes());
 	EXPECT_EQ(0,n2.getMembranePot());
 	++global_clock;
@@ -95,8 +100,8 @@ TEST (TwoNeurons, TransmitionAndDelay){
 	
 	///Update to step before input is transmitted
 	while (global_clock <938) {
-		n1.Update(1.01,false);
-		n2.Update(0.0,false);
+		n1.Update(1.01,false,0);
+		n2.Update(0.0,false,0);
 		++global_clock;
 		}
 	EXPECT_EQ(1, n1.getSpikes());
@@ -107,8 +112,8 @@ TEST (TwoNeurons, TransmitionAndDelay){
 	EXPECT_NEAR(938, n1.getLifeTime()/0.1, 1e-3);
 	EXPECT_NEAR(938, n2.getLifeTime()/0.1, 1e-3);
 	
-	n1.Update(1.01,false);
-	n2.Update(0.0,false);
+	n1.Update(1.01,false,0);
+	n2.Update(0.0,false,0);
 	++global_clock;
 	
 	EXPECT_EQ(0.1,n2.getMembranePot());
@@ -124,8 +129,8 @@ TEST(TwoNeurons, CleanedBuffer){
 	 * then it should implement n2's buffer for time 92.4+1.5(delay)=939*/
 	///Jump to the step just before first spike
 	while (global_clock<924) {
-		n1.Update(1.01,false);
-		n2.Update(0,false);
+		n1.Update(1.01,false,0);
+		n2.Update(0,false,0);
 		++global_clock;
 		EXPECT_EQ(0.0, n1.getBuffer(n2.getLifeTime()/0.1));
 		EXPECT_EQ(0.0, n2.getBuffer(n2.getLifeTime()/0.1));
@@ -138,8 +143,8 @@ TEST(TwoNeurons, CleanedBuffer){
 	
 	///Update to step before input is transmitted
 	while (global_clock <938) {
-		n1.Update(1.01,false);
-		n2.Update(0.0,false);
+		n1.Update(1.01,false,0);
+		n2.Update(0.0,false,0);
 		++global_clock;
 		EXPECT_EQ(0.0, n1.getBuffer(n2.getLifeTime()/0.1));
 		EXPECT_EQ(0.0, n2.getBuffer(n2.getLifeTime()/0.1));
@@ -147,8 +152,8 @@ TEST(TwoNeurons, CleanedBuffer){
 	
 	///At this step, the imput is integrated in membrane potential
 	EXPECT_EQ(0.1, n2.getBuffer((n2.getLifeTime()/0.1)+1));
-	n1.Update(1.01,false);
-	n2.Update(0.0,false);
+	n1.Update(1.01,false,0);
+	n2.Update(0.0,false,0);
 	++global_clock;
 	
 	EXPECT_EQ(0.1,n2.getMembranePot());
@@ -166,20 +171,20 @@ TEST(TwoNeurons, Spiking){
 	
 	///Jump to the step just before second spike
 	while (global_clock<1867) {
-		if (n1.Update(1.01,false)){
+		if (n1.Update(1.01,false,0)){
 			n2.ImplementBuffer(n1.getJ(),global_clock);
 			EXPECT_EQ(19.999, n2.getBuffer(((n2.getLifeTime()/0.1)+15)));
 			};
-		n2.Update(0,false);
+		n2.Update(0,false,0);
 		++global_clock;
 	}
 	EXPECT_EQ(1, n1.getSpikes());
 	EXPECT_EQ(0, n2.getSpikes());
 	
 	///Update to second spike
-	n1.Update(1.01,false);
+	n1.Update(1.01,false,0);
 	EXPECT_EQ(2, n1.getSpikes());
-	n2.Update(0,false);
+	n2.Update(0,false,0);
 	EXPECT_EQ(0, n2.getSpikes());
 	++global_clock;
 	
@@ -194,16 +199,16 @@ TEST(TwoNeurons, Spiking){
 	///Update to step before input is transmitted
 	while (global_clock <1882) {
 
-		n1.Update(1.01,false);
-		n2.Update(0.0,false);
+		n1.Update(1.01,false,0);
+		n2.Update(0.0,false,0);
 		++global_clock;
 		}
 	EXPECT_EQ(2, n1.getSpikes());
 	EXPECT_EQ(0, n2.getSpikes());
 
 	
-	n1.Update(1.01,false);
-	n2.Update(0.0,false);
+	n1.Update(1.01,false,0);
+	n2.Update(0.0,false,0);
 	++global_clock;
 	EXPECT_EQ(1, n2.getSpikes());
 	EXPECT_EQ(0,n2.getMembranePot());

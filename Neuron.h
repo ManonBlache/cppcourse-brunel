@@ -19,6 +19,7 @@ class Neuron
 		double  membrane_resistance_; //!< = 20
 		double threshold_;  //!< = 20
 		int life_time_; //!<Neuron clock
+		//const double eta_= 4;
 		double h_; //!<Step time = 0.1 ms		
 		double ref_;//!< number of steps required to quit refractory time = tau_ref_/h
 		double Iext_; //!<External current
@@ -51,7 +52,7 @@ class Neuron
     void setIext(double I);
 	
 	//Method that updates the neuron state from time t+T, where T=n*h
-	bool Update(double const& Iext, bool poisson);
+	bool Update(double const& Iext, bool poisson, int poissongene);
 	/*!
      * @brief : Function to update neurons. 
      * -Implement membrane potential w/o poisson (bool true/false)

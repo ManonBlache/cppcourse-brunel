@@ -4,7 +4,7 @@
 #include "gtest/gtest.h"
 
 
-TEST(NetworkTest, Creation){
+TEST(NetworkTest, Creation){//OK
 	Network Brain;
 	EXPECT_EQ(12500, Brain.getNeurons().size());
 	

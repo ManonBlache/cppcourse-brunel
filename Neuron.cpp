@@ -1,6 +1,6 @@
 #include "Neuron.h"
 #include <cmath>
-#include <random>
+//#include <random>
 
 //Constructeur et constructeur de copie
 	Neuron::Neuron(double J)
@@ -58,7 +58,7 @@
     void Neuron::setIext(double I) {Iext_=I;}
 
 //Method that updates the neuron state from time t+T, where T=n*h
-bool Neuron::Update (double const& Iext, bool poisson)
+bool Neuron::Update (double const& Iext, bool poisson, int poissongene)
 {
 	/** Before everything else, we have to initialize the boolean attribute
 	 * spikes_ which keep in memory if there was a spike during last update
@@ -102,7 +102,9 @@ bool Neuron::Update (double const& Iext, bool poisson)
 						 * spiking neurons of the rest of the brain.
 						 * -->add 0.1*Poisson_noise()
 						 **/
-						+0.1*Poisson_noise(); //does the poisson spikes have 0.1(excitatory) or 0.5(inhibatory) J value?
+						//+0.1*Poisson_noise();
+						+0.1*poissongene;
+						 //does the poisson spikes have 0.1(excitatory) or 0.5(inhibatory) J value?
 	//cout << membrane_pot_ << "/";
 	//if(getBuffer(life_time_+1)!=0){cout<<" buffer "<< getBuffer(life_time_+1)<<" at time "<<life_time_+1<<endl;}
 	} else {
@@ -163,16 +165,17 @@ void Neuron::clearBuffer(size_t position){
 	buffer_[position]=0;
 	}
 
-double Neuron::Poisson_noise(){
+/*double Neuron::Poisson_noise(){
 	/**Generate a number of spikes comming from the rest of the brain, 
 	 *for each update, and return it
 	 **/
-	random_device rd;
-	mt19937 gen(rd());
-	poisson_distribution<> d(2);
+	//static random_device rd;
+	//mt19937 gen(rd());
+	//double v = (threshold_*eta_)/(0.1*tau_);
+	//poisson_distribution<> d(v*0.1);
 
-	return d(gen);
-}
+	//return d(gen);
+//}
 
 void Neuron::setConnections(int target){
 	targets_.push_back(target);

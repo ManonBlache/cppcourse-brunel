@@ -52,12 +52,12 @@ int main () {
 					
 				
 					
-					if (FirstNeuron.Update(1.01,false)){
+					if (FirstNeuron.Update(1.01,false,0)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 1 number " << FirstNeuron.getSpikes() << " at time = " << FirstNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						   
 					}
-					if (SecondNeuron.Update(1.01,false)){
+					if (SecondNeuron.Update(1.01,false,0)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike neuron 2 number " << SecondNeuron.getSpikes() << " at time = " << SecondNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						   

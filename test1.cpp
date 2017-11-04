@@ -33,7 +33,7 @@ int main () {
 			 } 
 		else {
 				while (FirstNeuron.getLifeTime()<t_stop) {
-					if (FirstNeuron.Update(1.01,false)){
+					if (FirstNeuron.Update(1.01,false,0)){
 						//ECRITURE FICHIER ICI
 						sortie << "Spike number " << FirstNeuron.getSpikes() << " at time = " << FirstNeuron.getLifeTime() << " (Potential value = " << FirstNeuron.getMembranePot() << ")"<< endl;
 						     

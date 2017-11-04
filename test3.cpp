@@ -53,7 +53,7 @@ int main () {
 		else {
 				while (clock_*0.1<t_stop) {
 					
- 					if (FirstNeuron.Update(1.01,false)){
+ 					if (FirstNeuron.Update(1.01,false,0)){
 						SecondNeuron.ImplementBuffer( FirstNeuron.getJ(),
 													 (FirstNeuron.getLifeTime()/0.1)+15);
 						
@@ -66,7 +66,7 @@ int main () {
 							   << FirstNeuron.getMembranePot() 
 							   << ")"<< endl;   
 					}
-					if (SecondNeuron.Update(0.0,false)){
+					if (SecondNeuron.Update(0.0,false,0)){
 						//ECRITURE FICHIER ICI
 						sortie_02 << "Spike neuron 2 number " 
 								  << SecondNeuron.getSpikes() 

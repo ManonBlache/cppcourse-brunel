@@ -1,6 +1,7 @@
 #include "Network.h"
 #include <cassert>
 #include <random>
+
 //#include <map>
 
 Network::Network()
@@ -9,6 +10,12 @@ Network::Network()
 	//connections_.resize(12500, vector<int>(12500, 0));	
 	create_network(Ne_,Ni_); //!< When network is created, it creates all the 12500 neurons
 	connect(); //!<And then creates the 10% connections between them
+	string nom_fichier ("data_network_A.gdf");
+	sortie.open(nom_fichier.c_str());
+	if (sortie.fail()) {
+		cerr << "Erreur d'ouverture du fichier,"
+			 << "impossible d'écrire dans le fichier " << nom_fichier << endl;
+			 } 
 }
 
 Network::~Network(){
@@ -17,7 +24,7 @@ Network::~Network(){
 			delete neuron;
 		}
 	
-	
+	sortie.close();
 }
 
 vector<Neuron*> Network::getNeurons(){ return neurons_;}
@@ -28,7 +35,7 @@ void Network::create_network(int exct,int inhb){
 		neurons_.push_back(neuron);
 		}
 	for (int i(0); i<inhb; ++i) {
-		Neuron* neuron (new Neuron(0.1));//to change to -0.5
+		Neuron* neuron (new Neuron(-0.5));//to change to -0.5
 		neurons_.push_back(neuron);
 		}
 	
@@ -37,8 +44,8 @@ void Network::create_network(int exct,int inhb){
 void Network::connect(){ 
 	random_device rd;
 	mt19937 gen(rd());
-	uniform_int_distribution<> exct(0,9999);
-	uniform_int_distribution<> inhb(10000,12499);
+	uniform_int_distribution<> exct(0,Ne_-1);
+	uniform_int_distribution<> inhb(Ne_,Ne_+Ni_-1);
 	
 	///create random connections for each neuron
 	for (auto& neuron : neurons_){
@@ -59,36 +66,29 @@ void Network::connect(){
 
 void Network::update(bool poisson){
 	
-	for (auto& neuron : neurons_){
-		
-		if (neuron->Update(1.01, poisson)){
-			for (auto target : neuron->getTargets()){
-				neurons_[target]->ImplementBuffer( neuron->getJ(),
-												   neuron->getLifeTime()/0.1);
-				
-				}
-				
-		}	
-	}
-	++Net_clock_;
-	
-	/*for (size_t sender(0); sender < neurons_.size(); ++sender){
-		
-		if (neurons_[sender]->Update(1.01,true)){ 
-			//!< If the neuron spikes, it has to send J in the buffer of neurons connected to it
-			
-			for (auto target : connections_[sender]){
-				
-				if ((connections_[sender][target]!=0) and (sender<99999)){ //!< Find the connections
-					neurons_[target]->ImplementBuffer((connections_[sender][target]*0.1),15);
-				}
-				if ((connections_[sender][target]!=0) and (sender>=99999)){ //!< Find the connections
-					neurons_[target]->ImplementBuffer((connections_[sender][target]*(-0.5)),15);
-				}
-			}
-				
-		}
+	static random_device rd;
+	mt19937 gen(rd());
+	double v = (threshold_*eta_)/(0.1*tau_);
+	poisson_distribution<> d(v*0.1);
 
-	}*/
+	int indice (0);
+			
+	for (auto& neuron : neurons_){
+				
+		if (neuron->Update(0.0, poisson, d(gen))){
+			sortie << neuron->getLifeTime()/0.1 << '\t' << indice+1 << '\n';
+				
+			for (auto target : neuron->getTargets()){
+								neurons_[target]->ImplementBuffer( neuron->getJ(),
+													neuron->getLifeTime()/0.1);
+				
+						}
+					
+					
+				}	
+				++indice;
+			}
+
+++Net_clock_;
 
 }
