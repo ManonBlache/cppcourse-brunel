@@ -19,12 +19,11 @@ class Neuron
 		double  membrane_resistance_; //!< = 20
 		double threshold_;  //!< = 20
 		int life_time_; //!<Neuron clock
-		//const double eta_= 4;
 		double h_; //!<Step time = 0.1 ms		
 		double ref_;//!< number of steps required to quit refractory time = tau_ref_/h
 		double Iext_; //!<External current
 		double J_; //!>weight
-		double D_; //!<Delay
+		int D_; //!<Delay
 		
 		vector <double> buffer_ ; //!< Neuron buffer, contains J values
 		vector <int> targets_; //!< Keep in memory neurons it is connected to
@@ -84,14 +83,11 @@ class Neuron
      * @param : Takes as paramater the tab position to be cleared. 
      */
 	
-	double Poisson_noise();
-	/*!
-     * @brief : Function to generate the backgroud noise: tells the number
-     * of neurons in the rest of the brain which send spikes.
-     * @return : the number of spikes comming from the rest of the brain. 
-     */
-	
 	void setConnections(int target);
+	/*!
+     * @brief : Function to implement the targets_ tab of the neuron
+     * @param : Takes as paramater the target neuron ID 
+     */
 	
 };
 

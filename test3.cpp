@@ -18,7 +18,6 @@ int main () {
 
 	
 	Neuron FirstNeuron(0.1);
-	FirstNeuron.setJ(21);
 	Neuron SecondNeuron(0.1);
 
 	

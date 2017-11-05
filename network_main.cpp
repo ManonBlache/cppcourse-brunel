@@ -10,15 +10,9 @@ int main(){
 
 	
 	while(simulation_clock<t_stop){
-		Brain.update(true);
+		Brain.update(0.0,true);
 		++simulation_clock;
 		}
-	
-
-	
-	
-	
-	
 	
 	cout <<"done" <<endl;
 	

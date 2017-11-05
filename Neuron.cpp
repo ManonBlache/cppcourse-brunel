@@ -16,8 +16,8 @@
 	 ref_(0),
 	 Iext_(1.01), //est ce qu'on voudrait pas avoir un constructeur qui cree les neurones inhibiteurs et excitateurs?
 	 J_(J),//!<PSP (spike response) amplitude for excitatory connection
-	 D_(1.5), //!<Synaptic delay
-	 buffer_((D_/h_)+1, 0),
+	 D_(15), //!<Synaptic delay
+	 buffer_((D_)+1, 0),
 	 targets_(0,0)
 	 {}
 
@@ -33,9 +33,9 @@
 	 h_(0.1), //!<integration time step
 	 ref_(0),
 	 Iext_(1.01),
-	 J_(0.1),//!<PSP (spike response) amplitude 
-	 D_(1.5), //!<Synaptic delay
-	 buffer_((D_/h_)+1, 0),
+	 J_(J),//!<PSP (spike response) amplitude 
+	 D_(15), //!<Synaptic delay
+	 buffer_((D_)+1, 0),
 	 targets_(0,0)
 	{} 
 
@@ -100,13 +100,10 @@ bool Neuron::Update (double const& Iext, bool poisson, int poissongene)
 						/**Here we're in the Poisson'case, so have to
 						 * take in acount the amplitude delivered by the 
 						 * spiking neurons of the rest of the brain.
-						 * -->add 0.1*Poisson_noise()
+						 * -->add 0.1*poissongene
 						 **/
-						//+0.1*Poisson_noise();
-						+0.1*poissongene;
-						 //does the poisson spikes have 0.1(excitatory) or 0.5(inhibatory) J value?
-	//cout << membrane_pot_ << "/";
-	//if(getBuffer(life_time_+1)!=0){cout<<" buffer "<< getBuffer(life_time_+1)<<" at time "<<life_time_+1<<endl;}
+						+0.1*poissongene; /**<We suppose the neurons 
+						of the rest of the brain as excitatory neurons**/
 	} else {
 		
 		
@@ -114,7 +111,7 @@ bool Neuron::Update (double const& Iext, bool poisson, int poissongene)
 		/**We have to add+1 because neuron clock is not yet incremented**/
 						+(exp(-h_/tau_)*membrane_pot_) 
 						+( Iext*membrane_resistance_*(1-exp(-h_/tau_)));
-	if(getBuffer(life_time_+1)!=0){cout<<" buffer "<< getBuffer(life_time_+1)<<" at time "<<life_time_+1<<endl;}
+	
 	}
 		/**We make sure that buffer is cleared**/
 		clearBuffer((life_time_+1)%buffer_.size());
@@ -150,7 +147,7 @@ void Neuron::ImplementBuffer(double j, int time) {
 	 * at the t time the neuron receives it (after delay)
 	 **/
 	
-	size_t position = (time+15)%buffer_.size();
+	size_t position = (time+(D_))%buffer_.size();
 	buffer_[position]+=j;
 }
 
@@ -165,17 +162,6 @@ void Neuron::clearBuffer(size_t position){
 	buffer_[position]=0;
 	}
 
-/*double Neuron::Poisson_noise(){
-	/**Generate a number of spikes comming from the rest of the brain, 
-	 *for each update, and return it
-	 **/
-	//static random_device rd;
-	//mt19937 gen(rd());
-	//double v = (threshold_*eta_)/(0.1*tau_);
-	//poisson_distribution<> d(v*0.1);
-
-	//return d(gen);
-//}
 
 void Neuron::setConnections(int target){
 	targets_.push_back(target);

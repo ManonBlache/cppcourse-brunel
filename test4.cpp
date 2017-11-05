@@ -18,7 +18,7 @@ int main(){
 	Network Brain;
 	
 	while (clock_<t_stop){
-		Brain.update(false);
+		Brain.update(0, true);
 		++clock_;
 	}
 	
