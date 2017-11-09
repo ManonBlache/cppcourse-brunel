@@ -101,7 +101,7 @@ make doc
 Now you can go to the html folder, which should contain an "annoted.html" document. You can click on it to generate a web page with all the doxygen documentation of my project.
 
 ### 7. ABOUT THE OTHER TEST.CPP FILES ###
-You could hav noticed some test.cpp (from 1 to 4) in my github repository. They are files that I used during the semester to run my program when it was not finished. 
+You could have noticed some test.cpp (from 1 to 4) in my github repository. They are files that I used during the semester to run my program when it was not finished. 
 They are all included in my CMakeLists, they have been modified to run with the last version of my classes, thus you can execute them by writing ./test1 or ./test3, etc...
 
 #### Test1.cpp ###
